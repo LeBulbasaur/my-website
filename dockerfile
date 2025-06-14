@@ -1,4 +1,4 @@
-FROM golang:1.24-alpine AS builder
+FROM golang:1.24-bookworm AS builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN templ generate
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o app .
 
-FROM alpine:latest
+FROM bookworm:latest
 
 WORKDIR /app
 COPY --from=builder /app/app .
