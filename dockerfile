@@ -13,7 +13,7 @@ RUN templ generate
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o app .
 
-FROM bookworm:latest
+FROM debian:bookworm
 
 WORKDIR /app
 COPY --from=builder /app/app .
