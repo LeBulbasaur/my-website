@@ -1,17 +1,44 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"html/template"
+	"io"
 
-	"github.com/a-h/templ"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
-func main() {
-	component := hello("Sperek")
-	
-	http.Handle("/", templ.Handler(component))
+type Template struct {
+    tmpl *template.Template
+}
 
-	fmt.Println("Listening on :8080")
-	http.ListenAndServe(":8080", nil)
+func newTemplate() *Template {
+    return &Template{
+        tmpl: template.Must(template.ParseGlob("views/*.html")),
+    }
+}
+
+func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+    return t.tmpl.ExecuteTemplate(w, name, data)
+}
+
+type Count struct {
+    Count int
+}
+
+func main() {
+
+    e := echo.New()
+
+    count := Count{Count: 0}
+
+    e.Renderer = newTemplate()
+    e.Use(middleware.Logger())
+
+    e.GET("/", func(c echo.Context) error {
+        count.Count++
+        return c.Render(200, "base.html", count)
+    });
+
+    e.Logger.Fatal(e.Start(":8080"))
 }

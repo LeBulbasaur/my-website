@@ -1,11 +1,9 @@
-FROM golang:1.24-bookworm AS builder
+FROM golang:1.21-bookworm AS builder
 
 WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
-
-RUN go install github.com/a-h/templ/cmd/templ@latest
 
 COPY . .
 
