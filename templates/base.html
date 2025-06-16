@@ -12,6 +12,16 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    {% block main %} {% endblock %}
+    <main id="main-container">
+      <nav id="navbar">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tools">Tools</a></li>
+          <li><a href="/about">About me</a></li>
+        </ul>
+      </nav>
+      {% block main %} {% endblock %}
+      <footer id="footer">© 2025 Antoni Zaremba</footer>
+    </main>
   </body>
 </html>
