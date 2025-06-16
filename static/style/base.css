@@ -8,15 +8,16 @@
 
 body {
   width: 100vw;
+  height: 100vh;
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 
   background-color: #282828;
   background-image: url("/static/images/bg.png");
   background-size: cover;
+  background-repeat: no-repeat;
 
   overflow-x: hidden;
 }
