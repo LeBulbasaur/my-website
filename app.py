@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html')
+    return render_template('home.html')
 
 if __name__ == '__main__':
     with app.app_context():
