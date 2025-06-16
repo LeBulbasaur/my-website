@@ -1,0 +1,13 @@
+body {
+  width: 100vw;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #282828;
+  color: #ebdbb2;
+
+  overflow-x: hidden;
+}
