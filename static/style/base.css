@@ -27,8 +27,8 @@ body {
   width: 90%;
   flex: 1;
   display: flex;
-  align-items: center;
-  flex-direction: column;
+  align-items: stretch;
+  flex-direction: row;
 
   background: linear-gradient(
     to bottom,
@@ -67,24 +67,24 @@ body {
 }
 
 #navbar {
-  width: 100%;
+  width: 150px;
   background: linear-gradient(
-    to bottom,
+    to right,
     rgba(40, 80, 160, 0.95) 0%,
     rgba(30, 60, 120, 0.95) 50%,
     rgba(20, 40, 80, 0.95) 100%
   );
   border: 2px solid rgba(255, 255, 255, 0.35);
-  border-radius: 20px 20px 0 0;
+  border-radius: 20px 0 0 20px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
     0 2px 8px rgba(0, 0, 0, 0.3);
-  /* padding: 0.5rem 0; */
   margin: 0;
   position: relative;
   overflow: hidden;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  z-index: 1;
 }
 
 #navbar::before {
@@ -92,11 +92,11 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 40%;
-  border-radius: 20px 20px 0 0;
+  bottom: 0;
+  width: 40%;
+  border-radius: 20px 0 0 20px;
   background: linear-gradient(
-    to bottom,
+    to right,
     rgba(255, 255, 255, 0.15) 0%,
     rgba(255, 255, 255, 0.05) 60%,
     rgba(255, 255, 255, 0) 100%
@@ -108,22 +108,25 @@ body {
 #navbar ul {
   list-style: none;
   display: flex;
+  flex-direction: column;
   align-items: center;
   margin: 0;
+  padding: 0;
   width: 100%;
 }
 
 #navbar li {
   margin: 0;
   position: relative;
-  padding: 0.7rem 1.3rem;
+  padding: 0.7rem 1rem;
+  width: 80%;
   background: linear-gradient(
     to bottom,
     rgba(60, 100, 180, 0.8) 0%,
     rgba(40, 70, 140, 0.8) 50%,
     rgba(25, 50, 100, 0.8) 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -171,14 +174,13 @@ body {
 #navbar a {
   text-decoration: none;
   color: #eaf6ff;
-  font-size: 1.13rem;
+  font-size: 1rem;
   position: relative;
   z-index: 2;
   box-shadow: none;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 
@@ -189,7 +191,7 @@ body {
 #navbar .link-icon img {
   width: 1.5rem;
   height: 1.5rem;
-  margin-right: 0.5rem;
+  margin: 0 0.5rem 0 0;
 }
 
 #footer {
@@ -238,7 +240,48 @@ body {
   #main-container {
     width: 90%;
     margin: 0.5rem 0;
+    flex-direction: column;
   }
+
+  #navbar {
+    width: 100%;
+    min-width: auto;
+    border-radius: 20px 20px 0 0;
+    padding: 0.5rem 0;
+  }
+
+  #navbar::before {
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    height: 40%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+  }
+
+  #navbar ul {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  #navbar li {
+    width: auto;
+  }
+
+  #navbar a {
+    flex-direction: row;
+    font-size: 1rem;
+  }
+
+  #navbar .link-icon img {
+    margin-right: 0.5rem;
+  }
+
+  #content-container {
+    border-radius: 0 0 20px 20px;
+  }
+
   #footer {
     border-radius: 12px 12px 0 0;
     font-size: 0.7rem;
@@ -247,15 +290,18 @@ body {
   #footer::before {
     border-radius: 12px 12px 0 0;
   }
-  #navbar {
-    width: 100%;
-    padding: 0.5rem 0;
-  }
-  #navbar ul {
-    gap: 1rem;
-  }
-  #navbar a {
-    font-size: 1rem;
-    /* padding: 0.3rem 0.7rem; */
-  }
+}
+
+#content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 0 20px 20px 0;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
 }
