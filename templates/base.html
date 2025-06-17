@@ -15,9 +15,39 @@
     <main id="main-container">
       <nav id="navbar">
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tools">Tools</a></li>
-          <li><a href="/about">About me</a></li>
+          <li>
+            <a href="/">
+              <span class="link-icon">
+                <img
+                  src="{{url_for('static', filename='icons/safari.png')}}"
+                  alt="home"
+                />
+              </span>
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="/tools">
+              <span class="link-icon">
+                <img
+                  src="{{url_for('static', filename='icons/settings.png')}}"
+                  alt="home"
+                />
+              </span>
+              Tools
+            </a>
+          </li>
+          <li>
+            <a href="/about">
+              <span class="link-icon">
+                <img
+                  src="{{url_for('static', filename='icons/contacts.png')}}"
+                  alt="home"
+                />
+              </span>
+              About me
+            </a>
+          </li>
         </ul>
       </nav>
       {% block main %} {% endblock %}

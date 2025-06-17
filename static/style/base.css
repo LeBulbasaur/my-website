@@ -20,8 +20,6 @@ body {
   background-image: url("/static/images/bg.png");
   background-size: cover;
   background-repeat: no-repeat;
-
-  overflow-x: hidden;
 }
 
 #main-container {
@@ -45,6 +43,9 @@ body {
 
   text-align: center;
   position: relative;
+
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 #main-container::before {
@@ -67,11 +68,17 @@ body {
 
 #navbar {
   width: 100%;
-  background: transparent;
+  background: linear-gradient(
+    to bottom,
+    rgba(40, 80, 160, 0.95) 0%,
+    rgba(30, 60, 120, 0.95) 50%,
+    rgba(20, 40, 80, 0.95) 100%
+  );
   border: 2px solid rgba(255, 255, 255, 0.35);
   border-radius: 20px 20px 0 0;
-  box-shadow: none;
-  padding: 0.7rem 0 0.7rem 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  /* padding: 0.5rem 0; */
   margin: 0;
   position: relative;
   overflow: hidden;
@@ -81,39 +88,108 @@ body {
 }
 
 #navbar::before {
-  display: none;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 #navbar ul {
   list-style: none;
   display: flex;
-  justify-content: center;
   align-items: center;
   margin: 0;
-  padding: 0;
-  gap: 2.2rem;
   width: 100%;
 }
 
 #navbar li {
   margin: 0;
   position: relative;
+  padding: 0.7rem 1.3rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(60, 100, 180, 0.8) 0%,
+    rgba(40, 70, 140, 0.8) 50%,
+    rgba(25, 50, 100, 0.8) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#navbar li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+#navbar li:hover {
+  background: linear-gradient(
+    to bottom,
+    rgba(80, 130, 220, 0.9) 0%,
+    rgba(60, 100, 180, 0.9) 50%,
+    rgba(40, 70, 140, 0.9) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+#navbar li:active {
+  background: linear-gradient(
+    to bottom,
+    rgba(30, 50, 90, 0.9) 0%,
+    rgba(20, 35, 70, 0.9) 50%,
+    rgba(15, 25, 50, 0.9) 100%
+  );
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1);
 }
 
 #navbar a {
   text-decoration: none;
   color: #eaf6ff;
   font-size: 1.13rem;
-  padding: 0.4rem 1.3rem;
-  border-radius: 8px;
-  transition: color 0.22s cubic-bezier(0.4, 1.7, 0.7, 1.1);
   position: relative;
   z-index: 2;
   box-shadow: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #navbar a:hover {
   text-decoration: underline;
+}
+
+#navbar .link-icon img {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
 }
 
 #footer {
