@@ -7,19 +7,24 @@ styles %}
 />
 {% endblock %} {% block main %}
 <div class="container-home">
-  <h1>Welcome to my website 🗿</h1>
-  <img
-    src="{{url_for('static', filename='images/anime-frieren.gif')}}"
-    alt="frieren"
-  />
-  <img
-    src="{{url_for('static', filename='images/anime-frieren.gif')}}"
-    alt="frieren"
-  />
-  <img
-    src="{{url_for('static', filename='images/anime-frieren.gif')}}"
-    alt="frieren"
-  />
+  <div class="home-banner">
+    <div id="home-banner-text">
+      <div id="home-banner-text-content">
+        <h1>Welcome to my digital space</h1>
+        <p>Exploring the intersection of technology and time in a cool way.</p>
+        <ul>
+          <li>2000s technology is the best</li>
+          <li>Frutiger Aero rules</li>
+          <li>Nature rules</li>
+        </ul>
+      </div>
+    </div>
+    <img
+      src="{{url_for('static', filename='images/madobe_nanami_64.jpg')}}"
+      alt="madobe_nanami"
+      id="home-banner-image"
+    />
+  </div>
   <img
     src="{{url_for('static', filename='images/anime-frieren.gif')}}"
     alt="frieren"
