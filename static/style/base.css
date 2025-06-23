@@ -182,16 +182,23 @@ body {
 
   display: flex;
   align-items: center;
+  justify-content: start;
 }
 
 #navbar a:hover {
   text-decoration: underline;
 }
 
+#navbar .link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #navbar .link-icon img {
   width: 1.5rem;
   height: 1.5rem;
-  margin: 0 0.5rem 0 0;
+  margin-right: 0.5rem;
 }
 
 #footer {
