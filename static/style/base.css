@@ -251,6 +251,12 @@ body {
   overflow-x: hidden;
 }
 
+@media (max-width: 1060px) {
+  #navbar a {
+    font-size: 0.8rem;
+  }
+}
+
 @media (max-width: 768px) {
   h1 {
     text-align: center;

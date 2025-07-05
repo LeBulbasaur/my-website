@@ -115,8 +115,8 @@
 }
 
 @media (max-width: 900px) {
-  #home-banner-text {
-    width: 70%;
+  #home-banner-text h1 {
+    font-size: 1.15rem;
   }
 }
 
@@ -142,9 +142,14 @@
 
   #home-banner-text-content p {
     font-size: 0.9rem;
+    align-self: flex-start;
   }
 
   #home-banner-text-content ul {
-    display: none;
+    text-align: left;
+  }
+
+  #home-banner-text-content li {
+    font-size: 0.8rem;
   }
 }
