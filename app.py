@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from tools.trambus import get_trambus_schedule
 
 app = Flask(__name__)
 
@@ -12,7 +13,8 @@ def tools():
 
 @app.route('/tools/trambus', methods=['GET', 'POST'])
 def trambus():
-    return render_template('tools/trambus.html')
+    schedule = get_trambus_schedule('1234567890')
+    return render_template('tools/trambus.html', schedule=schedule)
 
 @app.route('/about', methods=['GET', 'POST'])
 def about():

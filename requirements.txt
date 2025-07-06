@@ -8,3 +8,4 @@ itsdangerous==2.1.2
 click==8.1.7
 blinker==1.7.0
 markupsafe==2.1.5
+requests==2.31.0
