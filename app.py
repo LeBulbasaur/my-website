@@ -10,6 +10,10 @@ def main():
 def tools():
     return render_template('tools.html')
 
+@app.route('/tools/trambus', methods=['GET', 'POST'])
+def trambus():
+    return render_template('tools/trambus.html')
+
 @app.route('/about', methods=['GET', 'POST'])
 def about():
     return render_template('about.html')

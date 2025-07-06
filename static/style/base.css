@@ -48,24 +48,6 @@ body {
   overflow: hidden;
 }
 
-#main-container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 22%;
-  border-radius: 20px 20px 60% 60%/20px 20px 40% 40%;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.38) 0%,
-    rgba(255, 255, 255, 0.1) 80%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
 #navbar {
   width: 150px;
   background: linear-gradient(

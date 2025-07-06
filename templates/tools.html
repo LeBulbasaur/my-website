@@ -6,5 +6,19 @@ styles %}
   href="{{url_for('static', filename='style/tools.css')}}"
 />
 {% endblock %} {% block main %}
-<h1>Tools</h1>
+<div class="container-tools">
+  <h1>Tools</h1>
+  <div class="content-tools">
+    <div class="content-tools-trambus">
+      <h2>Trambus</h2>
+      <p>Trambus is a tool that allows you to check MPK schedule.</p>
+      <a href="/tools/trambus">
+        <img
+          src="{{url_for('static', filename='icons/maps.png')}}"
+          alt="trambus"
+        />
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}
