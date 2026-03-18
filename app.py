@@ -6,9 +6,9 @@ app = Flask(__name__)
 def main():
     return render_template('home.html')
 
-@app.route('/tools', methods=['GET', 'POST'])
-def tools():
-    return render_template('tools.html')
+@app.route('/blog', methods=['GET', 'POST'])
+def blog():
+    return render_template('blog.html')
 
 if __name__ == '__main__':
     with app.app_context():
