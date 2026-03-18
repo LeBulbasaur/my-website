@@ -1,5 +1,4 @@
 from flask import Flask, render_template
-from tools.trambus import get_trambus_schedule
 
 app = Flask(__name__)
 
