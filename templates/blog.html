@@ -13,7 +13,7 @@
       <h2>{{ a.title}}</h2>
       <p>
         {{ (a.content[0].text[:300] if a.content and a.content[0] and
-        a.content[0].text) }}
+        a.content[0].text) }}...
       </p>
       <span class="content-blog-post-footer">
         {{a.slug[:2]}}/{{a.slug[2:4]}}/{{a.slug[4:8]}}
