@@ -7,6 +7,17 @@
 {% endblock %} {% block main %}
 <div class="container-blog">
   <h1>Blog</h1>
-  <div class="content-blog"></div>
+  <div class="content-blog">
+    {% for a in articles %}
+    <div class="content-blog-post">
+      <h2>{{ a.title}}</h2>
+      <p>{{ (a.content[0] if a.content[0]) }}</p>
+      <span class="content-blog-post-footer">
+        {{a.slug[:2]}}/{{a.slug[2:4]}}/{{a.slug[4:8]}}
+        <a href="/blog/{{ a.slug }}"> Read more -> </a>
+      </span>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

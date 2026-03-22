@@ -1,0 +1,122 @@
+{
+  "title": "Fixing broken EFI on Windows 11",
+  "date": "2026-03-22",
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "I like testing different Linux distros. However for some reason, last 2 installs (Omarchy and Bazzite) destroyed my Windows EFI partition. Obviously quitting Microslop would be nice, but sometimes I really miss this smooth gaming experience, which unfortunately is only available on Windows (e.g. Final Fantasy Rebirth, idk why it’s not optimised for anything else, if I’m doing something wrong just let me know). Sadly I don’t play video games that often, but when I finally have chance to do it, I just want to relax with ~60 fps experience, which in the most cases should be possible with my RX 6650 XT. I think that using a 1 distro for a longer time is impossible in my case, so I will myself some steps to fix that."
+    },
+    {
+      "type": "paragraph",
+      "text": "The main issue lies in the complete thanos snap of the EFI partition. To start troubleshooting, I had to create a bootable Windows pendrive. It’s better to use fresh iso every time, my original Windows 11 2022H2 official pendrive (yes, I bought the physical box :P) was pretty bugged and sluggish. I used ventoy to flash it:"
+    },
+    {
+      "type": "code",
+      "text": "wget https://github.com/ventoy/Ventoy/releases/download/v1.0.97/ventoy-1.0.97-linux.tar.gz"
+    },
+    {
+      "type": "code",
+      "text": "tar -xvf ventoy-1.0.97-linux.tar.gz"
+    },
+    {
+      "type": "code",
+      "text": "cd ventoy-1.0.97"
+    },
+    {
+      "type": "code",
+      "text": "sudo sh VentoyWeb.sh"
+    },
+    {
+      "type": "paragraph",
+      "text": "I always used rufus on Windows to do that, I have to admit that using ventoy is pretty cool and straightforward with all that localhost UI. After getting it on the pendrive it’s just copy-pasting the iso. Then I booted into Windows > CMD and used diskpart for fixing OS:"
+    },
+    {
+      "type": "code",
+      "text": "diskpart"
+    },
+    {
+      "type": "code",
+      "text": "list disk"
+    },
+    {
+      "type": "code",
+      "text": "select disk X"
+    },
+    {
+      "type": "code",
+      "text": "list part"
+    },
+    {
+      "type": "code",
+      "text": "select part Y"
+    },
+    {
+      "type": "code",
+      "text": "shrink desired=100"
+    },
+    {
+      "type": "code",
+      "text": "create partition efi size=100"
+    },
+    {
+      "type": "code",
+      "text": "list part (should be selected)"
+    },
+    {
+      "type": "code",
+      "text": "format fs=fat32 quick"
+    },
+    {
+      "type": "code",
+      "text": "assign letter=Z"
+    },
+    {
+      "type": "code",
+      "text": "exit"
+    },
+    {
+      "type": "code",
+      "text": "bcdboot C:Windows /s Z: /f UEFI"
+    },
+    {
+      "type": "paragraph",
+      "text": "That should be it. One thing to mention, I got stuck on the last command because it didn’t want to find a Windows directory in that path. "
+    },
+    {
+      "type": "image",
+      "src": "/temp"
+    },
+    {
+      "type": "paragraph",
+      "text": "What actually happened is that Windows for some reason labeled my bootable iso as a C: so I had to return to diskpart and change the letter:"
+    },
+    {
+      "type": "image",
+      "src": "/temp"
+    },
+    {
+      "type": "code",
+      "text": "/temp"
+    },
+    {
+      "type": "code",
+      "text": "select vol 1"
+    },
+    {
+      "type": "code",
+      "text": "assign letter=W"
+    },
+    {
+      "type": "code",
+      "text": "exit"
+    },
+    {
+      "type": "code",
+      "text": "bcdboot W:Windows /s Z: /f UEFI"
+    },
+    {
+      "type": "paragraph",
+      "text": "That’s it (^_^)"
+    }
+  ]
+}
