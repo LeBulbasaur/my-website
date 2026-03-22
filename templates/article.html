@@ -2,11 +2,23 @@
 <link
   rel="stylesheet"
   type="text/css"
-  href="{{url_for('static', filename='style/tools/article.css')}}"
+  href="{{url_for('static', filename='style/article.css')}}"
 />
 {% endblock %} {% block main %}
 <div class="container-article">
-  <h1>{{title}}</h1>
-  <div class="content-article">{{content}}</div>
+  <h1>Article: {{ article.title }}</h1>
+  <div class="content-article">
+    {% for data in article.content %} {% if data.type == "paragraph" %}
+    <p>{{data.text}}</p>
+    {% elif data.type == "code" %}
+    <code> {{data.text}} </code>
+    {% else %}
+    <p>{{data}}</p>
+    {% endif %} {% endfor %}
+
+    <p style="width: 100%; text-align: end">
+      <a href="{{ url_for('blog') }}"> >> Back to blog</a>
+    </p>
+  </div>
 </div>
 {% endblock %}
