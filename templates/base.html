@@ -31,47 +31,16 @@
               <span class="link-icon">
                 <img
                   src="{{url_for('static', filename='icons/contacts.png')}}"
-                  alt="blog"
+                  alt="home"
                 />
               </span>
               Blog
             </a>
           </li>
-          {% if logged_in %}
-          <li>
-            <a href="/logout">
-              <span class="link-icon">
-                <img
-                  src="{{url_for('static', filename='icons/settings.png')}}"
-                  alt="logout"
-                />
-              </span>
-              Logout
-            </a>
-          </li>
-          {% else %}
-          <li>
-            <a href="/login">
-              <span class="link-icon">
-                <img
-                  src="{{url_for('static', filename='icons/settings.png')}}"
-                  alt="login"
-                />
-              </span>
-              Login
-            </a>
-          </li>
-          {% endif %}
         </ul>
       </nav>
       <div id="content-container">{% block main %} {% endblock %}</div>
     </main>
-    <footer id="footer">
-      © 2025 Antoni Zaremba {% if logged_in %}
-      <span style="color: green"> Verified </span>
-      {% else %}
-      <span style="color: red"> Unverified </span>
-      {% endif %}
-    </footer>
+    <footer id="footer">© 2025 Antoni Zaremba</footer>
   </body>
 </html>
