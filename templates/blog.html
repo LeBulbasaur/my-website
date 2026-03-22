@@ -11,7 +11,10 @@
     {% for a in articles %}
     <div class="content-blog-post">
       <h2>{{ a.title}}</h2>
-      <p>{{ (a.content[0] if a.content[0]) }}</p>
+      <p>
+        {{ (a.content[0].text[:300] if a.content and a.content[0] and
+        a.content[0].text) }}
+      </p>
       <span class="content-blog-post-footer">
         {{a.slug[:2]}}/{{a.slug[2:4]}}/{{a.slug[4:8]}}
         <a href="/blog/{{ a.slug }}"> Read more -> </a>
