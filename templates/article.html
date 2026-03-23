@@ -12,6 +12,11 @@
     <p>{{data.text}}</p>
     {% elif data.type == "code" %}
     <code> {{data.text}} </code>
+    {% elif data.type == "image" %}
+    <img
+      src="{{ url_for('static', filename='images/article-photos/' ~ data.filename) }}"
+      alt="article photo"
+    />
     {% else %}
     <p>{{data}}</p>
     {% endif %} {% endfor %}

@@ -84,7 +84,7 @@
     },
     {
       "type": "image",
-      "src": "/temp"
+      "filename": "22032026-1.png"
     },
     {
       "type": "paragraph",
@@ -92,11 +92,7 @@
     },
     {
       "type": "image",
-      "src": "/temp"
-    },
-    {
-      "type": "code",
-      "text": "/temp"
+      "filename": "22032026-2.png"
     },
     {
       "type": "code",
