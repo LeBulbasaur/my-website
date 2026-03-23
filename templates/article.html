@@ -11,7 +11,7 @@
     {% for data in article.content %} {% if data.type == "paragraph" %}
     <p>{{data.text}}</p>
     {% elif data.type == "code" %}
-    <code> {{data.text}} </code>
+    <code>$ {{data.text}} </code>
     {% elif data.type == "image" %}
     <img
       src="{{ url_for('static', filename='images/article-photos/' ~ data.filename) }}"
