@@ -1,0 +1,222 @@
+{
+  "title": "Setting up Bitwarden Lite on Proxmox LXC",
+  "date": "2026-04-01",
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "As a first project I decided to set up a password manager. In my life I used mostly two: Keepass and Bitwarden. I heard that the second one is fairly easy to configure so I decided to go for it (just fyi, there wasn’t a huge research behind it). Also, I wanted to do it in a little bit more complicated way than just using Vaultwarden script from Proxmox Scripts, but at the same time I don’t really know what the best practices are so please have some mercy on me :P. Lately Bitwarden released Lite version for personal projects which was a huge win for my budget setup (Thinkcentre M700 Tiny). My plan was to create an LXC container with Debian 13, 8GB of storage, 512MB of memory and leave 1 core, but as the docs say it should be enough for my usage (I set it for like 4 times at this point, so this config also turned out in practice). Following Bitwarden documentation I also installed Docker Engine to run the container (in a container, that’s what makes my setup sus for me). Guide for the Bitwarden Lite installation: "
+    },
+    {
+      "type": "paragraph",
+      "text": "https://bitwarden.com/help/install-and-deploy-lite/#tab-docker-run-5JDM3sqPaeOnRiPXhlVjSX"
+    },
+    {
+      "type": "paragraph",
+      "text": "After creating container I had to fix not working network adapter:"
+    },
+    {
+      "type": "code",
+      "text": "ping 8.8.8.8\nping: connect: Network is unreachable"
+    },
+    {
+      "type": "code",
+      "text": "ip a"
+    },
+    {
+      "type": "paragraph",
+      "text": "Noticed that the adapter is down, so I turned it on:"
+    },
+    {
+      "type": "code",
+      "text": "ip link set eth0 up"
+    },
+    {
+      "type": "paragraph",
+      "text": "And activated DHCP for the little guy:"
+    },
+    {
+      "type": "code",
+      "text": "dhclient eth0"
+    },
+    {
+      "type": "code",
+      "text": "ping wp.pl\nPING wp.pl (212.77.98.9) 56(84) bytes of data. \n64 bytes from www.wp.pl (212.77.98.9): icmp_seq=1 ttl=60 time=8.30 ms\n64 bytes from www.wp.pl (212.77.98.9): icmp_seq=2 ttl=60 time=7.90 ms\n64 bytes from www.wp.pl (212.77.98.9): icmp_seq=3 ttl=60 time=8.47 ms"
+    },
+    {
+      "type": "paragraph",
+      "text": "Now with the working network adapter we can move to configuring new user so we won’t stay on the root all the time (safety yay)"
+    },
+    {
+      "type": "code",
+      "text": "apt update"
+    },
+    {
+      "type": "code",
+      "text": "apt install sudo"
+    },
+    {
+      "type": "code",
+      "text": "adduser sperek"
+    },
+    {
+      "type": "code",
+      "text": "usermod -aG sudo sperek"
+    },
+    {
+      "type": "code",
+      "text": "su sperek"
+    },
+    {
+      "type": "paragraph",
+      "text": "Escape root dir + sudo check at the same time"
+    },
+    {
+      "type": "code",
+      "text": "sudo cd ../home/sperek"
+    },
+    {
+      "type": "paragraph",
+      "text": "Now installing docker engine from their docs:"
+    },
+    {
+      "type": "code",
+      "text": "# Add Docker's official GPG key:\nsudo apt update\nsudo apt install ca-certificates curl\nsudo install -m 0755 -d /etc/apt/keyrings\nsudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc\nsudo chmod a+r /etc/apt/keyrings/docker.asc"
+    },
+    {
+      "type": "code",
+      "text": "# Add the repository to Apt sources: \nsudo tee /etc/apt/sources.list.d/docker.sources <<EOF\nTypes: deb\nURIs: https://download.docker.com/linux/debian\nSuites: $(. /etc/os-release && echo \"$VERSION_CODENAME\") \nComponents: stable\nSigned-By: /etc/apt/keyrings/docker.asc\nEOF"
+    },
+    {
+      "type": "code",
+      "text": "sudo apt update"
+    },
+    {
+      "type": "code",
+      "text": "sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"
+    },
+    {
+      "type": "paragraph",
+      "text": "And check if the docker is running fine:"
+    },
+    {
+      "type": "code",
+      "text": "systemctl status docker\n* docker.service - Docker Application Container Engine\n     Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; preset: enabled)\n     Active: active (running) since Thu 2026-03-26 11:51:36 UTC; 42s ago"
+    },
+    {
+      "type": "paragraph",
+      "text": "Now we can move to the Bitwarden part. First, I created settings.env file in the user directory:"
+    },
+    {
+      "type": "code",
+      "text": "nano settings.env"
+    },
+    {
+      "type": "paragraph",
+      "text": "I used this basic config from the Bitwarden and changed few things later:"
+    },
+    {
+      "type": "code",
+      "text": "#####################\n# Required Settings #\n#####################\n\n# Server hostname\nBW_DOMAIN=bitwarden.example.com\n\n# Database\n# Available providers are sqlserver, postgresql, mysql/mariadb, or sqlite\nBW_DB_PROVIDER=mysql\nBW_DB_SERVER=db\nBW_DB_DATABASE=bitwarden_vault\nBW_DB_USERNAME=bitwarden\nBW_DB_PASSWORD=super_strong_password\n\n# Installation information\n# Get your ID and key from https://bitwarden.com/host/\nBW_INSTALLATION_ID=00000000-0000-0000-0000-000000000000\nBW_INSTALLATION_KEY=xxxxxxxxxxxx"
+    },
+    {
+      "type": "paragraph",
+      "text": "Then I generated ID and KEY from https://bitwarden.com/host/. Lastly, I ran the docker container:"
+    },
+    {
+      "type": "code",
+      "text": "sudo docker run -d --name bitwarden -v /$(pwd)/bwdata/:/etc/bitwarden -p 80:8080  --env-file settings.env ghcr.io/bitwarden/lite"
+    },
+    {
+      "type": "paragraph",
+      "text": "It worked!"
+    },
+    {
+      "type": "code",
+      "text": "sudo docker ps\nCONTAINER ID   IMAGE                    COMMAND            CREATED              STATUS              PORTS                                  NAMES \n7d6a813c69a7   ghcr.io/bitwarden/lite   \"/entrypoint.sh\"   About a minute ago   Up About a minute   0.0.0.0:80->8080/tcp, [::]:80->8080/tcp   bitwarden"
+    },
+    {
+      "type": "paragraph",
+      "text": "Getting into the website using eth0 ip address and http (got me confused for a while, turned out that Firefox was constantly putting that “s” at the end). Despite working frontend, the website could not be loaded. I just watched the wheel spinning and spinning…"
+    },
+    {
+      "type": "paragraph",
+      "text": "In the docker logs:"
+    },
+    {
+      "type": "code",
+      "text": "docker logs bitwarden"
+    },
+    {
+      "type": "paragraph",
+      "text": "I found an this:"
+    },
+    {
+      "type": "code",
+      "text": "2026-03-26 12:36:06,968 WARN exited: admin (terminated by SIGABRT (core dumped); not expected)"
+    },
+    {
+      "type": "paragraph",
+      "text": "At the first glance I thought that it might be something connected to the LXC not having full access to kernel to use cryptography tools so I tweaked these settings: keyctl for “kernel keyring” access and FUSE for AppImage (that was Gemini’s idea). After that I removed container to run it again:"
+    },
+    {
+      "type": "image",
+      "filename": "01042026-1.png"
+    },
+    {
+      "type": "code",
+      "text": "docker rm -f bitwarden"
+    },
+    {
+      "type": "paragraph",
+      "text": "Unfortunately it didn’t fix my issue which made me give up for few days. Upon return I decided to check browser console and noticed this error:"
+    },
+    {
+      "type": "code",
+      "text": "Unhandled error in angular Error: Could not instantiate WebCryptoFunctionService. Could not locate Subtle crypto."
+    },
+    {
+      "type": "paragraph",
+      "text": "Which brought me to this thread:"
+    },
+    {
+      "type": "paragraph",
+      "text": "https://github.com/dani-garcia/vaultwarden/discussions/5486"
+    },
+    {
+      "type": "paragraph",
+      "text": "I decided to use a tailscale HTTPs for now, as I have it configured for my pve."
+    },
+    {
+      "type": "paragraph",
+      "text": "https://tailscale.com/docs/features/containers/lxc/lxc-unprivileged"
+    },
+    {
+      "type": "paragraph",
+      "text": "I installed it and then generated a certificate using:"
+    },
+    {
+      "type": "code",
+      "text": "tailscale cert <domain>"
+    },
+    {
+      "type": "paragraph",
+      "text": "I also had to enable proxy for bitwarden container to be accessible:"
+    },
+    {
+      "type": "code",
+      "text": "sudo tailscale serve –bg http://127.0.0.1:80"
+    },
+    {
+      "type": "image",
+      "filename": "01042026-2.png"
+    },
+    {
+      "type": "paragraph",
+      "text": "WE FINALLY GOT IT LETS GO!!"
+    },
+    {
+      "type": "paragraph",
+      "text": "Maybe in the future I will try to use Cloudflare with my domain which for now is only used for this website. (Also I have to upgrade the network adapter configuration as it resets after every container restart…)"
+    }
+  ]
+}

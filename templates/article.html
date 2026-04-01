@@ -6,7 +6,7 @@
 />
 {% endblock %} {% block main %}
 <div class="container-article">
-  <h1>Article: {{ article.title }}</h1>
+  <h1>{{ article.title }}</h1>
   <div class="content-article">
     {% for data in article.content %} {% if data.type == "paragraph" %}
     <p>{{data.text}}</p>
