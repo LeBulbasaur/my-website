@@ -221,6 +221,6 @@
     {
       "type": "paragraph",
       "text": "UPDATE: I assumed it was working because of login screen, however I can't log in getting 500 error, tbh I'm thinking about moving to vaultwarden at this point xd"
-    },
+    }
   ]
 }
