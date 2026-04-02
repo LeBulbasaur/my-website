@@ -217,6 +217,10 @@
     {
       "type": "paragraph",
       "text": "Maybe in the future I will try to use Cloudflare with my domain which for now is only used for this website. (Also I have to upgrade the network adapter configuration as it resets after every container restart…)"
-    }
+    },
+    {
+      "type": "paragraph",
+      "text": "UPDATE: I assumed it was working because of login screen, however I can't log in getting 500 error, tbh I'm thinking about moving to vaultwarden at this point xd"
+    },
   ]
 }
