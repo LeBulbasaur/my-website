@@ -220,7 +220,11 @@
     },
     {
       "type": "paragraph",
-      "text": "UPDATE: I assumed it was working because of login screen, however I can't log in getting 500 error, tbh I'm thinking about moving to vaultwarden at this point xd"
+      "text": "UPDATE: I assumed it was working because of login screen, however I can't log in getting 500 error, tbh I'm thinking about moving to Vaultwarden at this point xd"
+    },
+    {
+      "type": "paragraph",
+      "text": "UPDATE: Tried installing Vaultwarden and it worked perfectly fine so I have no idea what went wrong there... Also, when creating LXC I forgot to tick the DHCP box so now interface works out of the box :D"
     }
   ]
 }
