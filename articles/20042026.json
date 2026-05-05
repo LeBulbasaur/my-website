@@ -1,0 +1,98 @@
+{
+  "title": "Setting up samba on Debian 12 (Proxmox)",
+  "date": "2026-04-09",
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "Initially when I bought a Lenovo M700 Tiny for my homelab, I got a 128GB SSD, so it was okay for some basic services but definitely not enough for my plans (music+images+file server). Luckily about a year ago I bought myself 1TB SATA SSD to triple boot 2 Linuxes + Windows 11 on my PC, as I wanted to daily drive stable distro (Mint), play with less stable, freaky Arch-based OS and keep Windows 11 for games that won’t run on Unix systems due to anticheats. I dropped this idea some time ago and kept 1TB for Windows gaming and 1TB for Linux. I’m definitely not in my gaming prime at the moment so swapping that almost empty SSD was exactly what I needed. I used DiskGenius to migrate all data from SATA SSD (Windows) to my empty NVMe, following this guys tutorial: https://youtu.be/Sdu0bq-Upfw?si=l9wSVE36ojFprxdk"
+    },
+    {
+      "type": "paragraph",
+      "text": "As my homelab supports SATA SSDs I was able to mount it (almost perfectly, unfortunately the tray was missing so I had to make one on a 3D printer, the tray turned out a little tilted but keeps the drive in place). 128GB NVMe drive was left for the system. After everything was connected I had to wipe this drive and initialize it:"
+    },
+    {
+      "type": "code",
+      "text": "vgs\nvgremove <disk name> –force"
+    },
+    {
+      "type": "image",
+      "filename": "20042026-1.png"
+    },
+    {
+      "type": "paragraph",
+      "text": "I decided to set up samba on Debian 12 as I wanted the most stable experience. I gave this container 8GB of storage, 1 core and 512MB of memory. I mounted the external directory and proceeded with the initial setup:"
+    },
+    {
+      "type": "code",
+      "text": "pct set 100 -mp0 /mnt/pve/ssd-samba,mp=/mnt/dane\napt update && upgrade -y\napt install sudo\nadduser sperek\nusermod -aG sudo sperek"
+    },
+    {
+      "type": "paragraph",
+      "text": "Then I installed samba and created a password for my user:"
+    },
+    {
+      "type": "code",
+      "text": "apt install samba\nsudo smbpasswd -a sperek"
+    },
+    {
+      "type": "paragraph",
+      "text": "I added a basic configuration and restarted this process:"
+    },
+    {
+      "type": "code",
+      "text": "sudo nano /etc/samba/smb.conf\n\n[miniNAS]\n   path = /mnt/data\n   browseable = yes\n   read only = no\n   guest ok = no\n\nsudo systemctl restart smbd"
+    },
+    {
+      "type": "paragraph",
+      "text": "From the Proxmox I allowed rwx for everyone:"
+    },
+    {
+      "type": "code",
+      "text": "chmod -R 777 /mnt/pve/ssd-samba"
+    },
+    {
+      "type": "paragraph",
+      "text": "To connect from my CachyOS system with Nautilus file explorer I had to download gvfs-smb library which allowed me to connect to my service! I made a test file manually which is visible in my container:"
+    },
+    {
+      "type": "image",
+      "filename": "20042026-2.png"
+    },
+    {
+      "type": "code",
+      "text": "sperek@samba:~$ ls -la /mnt/data\ntotal 48\ndrwxrwxrwx 8 nobody nogroup  4096 Apr  9 09:49 .\ndrwxr-xr-x 3 root    root     4096 Apr  9 09:29 ..\ndrwxrwxrwx 2 nobody nogroup  4096 Apr  9 09:23 dump\ndrwxrwxrwx 2 nobody nogroup  4096 Apr  9 09:23 images\ndrwxrwxrwx 2 nobody nogroup 16384 Apr  9 09:23 lost+found\ndrwxrwxrwx 2 nobody nogroup  4096 Apr  9 09:23 private\n-rwxr--r-- 1 sperek sperek     26 Apr  9 09:49 siemanko\ndrwxrwxrwx 2 nobody nogroup  4096 Apr  9 09:23 snippets\ndrwxrwxrwx 4 nobody nogroup  4096 Apr  9 09:23 template"
+    },
+    {
+      "type": "paragraph",
+      "text": "At the end I configured tailscale connection so that I can connect to my file server from the outside:"
+    },
+    {
+      "type": "image",
+      "filename": "20042026-3.png"
+    },
+    {
+      "type": "code",
+      "text": "sudo apt install curl\ncurl -fsSL https://tailscale.com/install.sh | sh\nsudo tailscale up"
+    },
+    {
+      "type": "paragraph",
+      "text": "Generated a certificate for MagicDNS:"
+    },
+    {
+      "type": "code",
+      "text": "sudo tailscale cert <magicdns adress>"
+    },
+    {
+      "type": "paragraph",
+      "text": "Voila! Next plan: self-hosted music player… (^_^)"
+    },
+    {
+      "type": "code",
+      "text": "wget -P /mnt/data/music \"https://dn710206.ca.archive.org/0/items/Kevin-MacLeod_HappyRock_2014_FullAlbum/Happyrock/Kevin%20MacLeod%20-%2006%20-%20Iron%20Bacon.mp3\""
+    },
+    {
+      "type": "image",
+      "filename": "20042026-4.png"
+    }
+  ]
+}
