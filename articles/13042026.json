@@ -1,0 +1,94 @@
+{
+  "title": "Self-hosting music with Navidrome and Cloudflare Tunnel",
+  "date": "2026-04-13",
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "To start, I created an 8GB + 1 core + 512MB of memory Debian 13 LXC container to host my music system. I decided to go with a Navidrome, as I read on the internet that it was more efficient, lighter and generally better than Jellyfin. As a first step, I had to configure the system (same as previous configurations so I will just leave commands below):"
+    },
+    {
+      "type": "code",
+      "text": "apt update && upgrade -y\n\napt install sudo\n\nadduser sperek\n\nusermod -aG sudo sperek"
+    },
+    {
+      "type": "paragraph",
+      "text": "Then I downloaded and installed the software from the official repository:"
+    },
+    {
+      "type": "code",
+      "text": "wget https://github.com/navidrome/navidrome/releases/download/v0.61.1/navidrome_0.61.1_linux_amd64.deb\n\nsudo apt install ./navidrome_0.61.1_linux_amd64.deb"
+    },
+    {
+      "type": "paragraph",
+      "text": "Enabled the service and checked if it’s running correctly:"
+    },
+    {
+      "type": "code",
+      "text": "sudo systemctl enable --now navidrome\n\nsudo systemctl status navidrome\nsudo journalctl -u navidrome -f"
+    },
+    {
+      "type": "code",
+      "text": "sperek@navidrome:~$ sudo systemctl status navidrome\nsudo journalctl -u navidrome -f\n* navidrome.service - Your Personal Streaming Service\n     Loaded: loaded (/etc/systemd/system/navidrome.service; enabled; preset: enabled)\n     Active: active (running) since Thu 2026-04-09 10:34:15 UTC; 4s ago"
+    },
+    {
+      "type": "image",
+      "filename": "13042026-1.png"
+    },
+    {
+      "type": "paragraph",
+      "text": "That was incredibely quick and easy, everything working as expected. After setting up the service I wanted to connect it to my SAMBA drive for easy access and synchronization:"
+    },
+    {
+      "type": "code",
+      "text": "apt update && apt install cifs-utils -y\n\nmkdir -p /mnt/muzyka\n\nnano ~/.smbcredentials\n\nusername=USERNAME\npassword=PASSWORD\ndomain=WORKGROUP"
+    },
+    {
+      "type": "paragraph",
+      "text": "However I had a problem with permissions, I was not able to get into it no matter what:"
+    },
+    {
+      "type": "code",
+      "text": "chmod 600 ~/.smbcredentials\n\nsperek@navidrome:~$ sudo mount -t cifs -o credentials=/home/sperek/.smbcredentials,iochars\net=utf8,vers=3.0 //XXX.XXX.XXX.XXX/mininas/ /mnt/music\nmount error(1): Operation not permitted\nRefer to the mount.cifs(8) manual page (e.g. man mount.cifs) and kernel log messages (dmesg)"
+    },
+    {
+      "type": "paragraph",
+      "text": "After playing with the configs I just gave up and connected my drive directly to the container. To keep things organised and safe, I mounted only one, previously created directory:"
+    },
+    {
+      "type": "code",
+      "text": "pct set 101 -mp0 /mnt/pve/ssd-samba/music,mp=/mnt/music"
+    },
+    {
+      "type": "paragraph",
+      "text": "And set the new source path for Navidrome:"
+    },
+    {
+      "type": "code",
+      "text": "sudo nano /etc/navidrome/navidrome.toml\n\nMusicFolder = \"/mnt/music\"\n\nsudo systemctl restart navidrome"
+    },
+    {
+      "type": "image",
+      "filename": "13042026-2.png"
+    },
+    {
+      "type": "paragraph",
+      "text": "Another success! However I wanted to listen to my music library on a daily basis, not only in my local environment. I know I could have set up Tailscale and use VPN, but that was way too tedious for my usage. This is the part where Cloudflare reverse proxying came to the rescue. As I already had a DNS server for my website, I came up with an idea to use it for the Cloudflare Tunnel feature, which would allow me to connect to my service safely from anywhere I want (almost). After creating account I followed tutorial from their website to install their daemon:"
+    },
+    {
+      "type": "code",
+      "text": "sudo apt install curl\n\n# Add cloudflare gpg key\nsudo mkdir -p --mode=0755 /usr/share/keyrings\ncurl -fsSL https://pkg.cloudflare.com/cloudflare-public-v2.gpg | sudo tee /usr/share/keyrings/cloudflare-public-v2.gpg >/dev/null\n\n# Add this repo to your apt repositories\necho 'deb [signed-by=/usr/share/keyrings/cloudflare-public-v2.gpg] https://pkg.cloudflare.com/cloudflared any main' | sudo tee /etc/apt/sources.list.d/cloudflared.list\n\n# install cloudflared\nsudo apt-get update && sudo apt-get install cloudflared"
+    },
+    {
+      "type": "paragraph",
+      "text": "Then I connected my container with their service and that was it:"
+    },
+    {
+      "type": "code",
+      "text": "sudo cloudflared service install SUPERLONGHASHORSOMETHING"
+    },
+    {
+      "type": "paragraph",
+      "text": "Of course it wasn’t that easy, this reverse proxy thing was definitely less pleasant than setting up navidrome. After creating the tunnel I had to replace OVH DNS servers with Cloudflare’s (as a proud European I have to admit, it was painful). Then I waited ~6 hours so that the new servers were correctly synchronized, but after that time it still didn't work. I did some digging and found that OVH scheduled these tasks for the next day, so I forced it to do that immediately and puffff… It worked! Yup, it worked but I did that on the break at work, so I was surprised that upon returning home I could not connect using my wifi. When I disabled wifi and used the 5G network it worked flawlessly, so I assumed that the name wasn’t propagated correctly and my internet operator had to refresh their servers. I checked the propagation of my domain name using a few websites and as I thought, it was okay in some places and could not connect in other ones. I’m still not sure if it was the case, but after a day or so, my local network finally caught up and it’s still working fine as of today."
+    }
+  ]
+}
